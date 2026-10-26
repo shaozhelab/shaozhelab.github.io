@@ -1,0 +1,31 @@
+{{- $meta := slice }}
+
+{{- range .GetTerms "project" }}
+    {{- $meta = $meta | append (printf "<span>%s</span>" .LinkTitle) }}
+{{- end }}
+
+{{- if not .Date.IsZero -}}
+    {{- $meta = $meta | append (printf "<span title='%s'>%s</span>" (.Date | time.Format "2006-01-02T15:04:05-07:00") (.Date | time.Format (default ":date_long" site.Params.DateFormat))) }}
+{{- end }}
+
+{{- if (.Param "ShowReadingTime") -}}
+    {{- $meta = $meta | append (printf "<span>%s</span>" (i18n "read_time" .ReadingTime | default (printf "%d min" .ReadingTime))) }}
+{{- end }}
+
+{{- with $meta }}
+    {{- delimit . "&nbsp;·&nbsp;" | safeHTML -}}
+{{- end -}}
+
+{{- $chips := slice }}
+{{- range .GetTerms "project" }}{{ $chips = $chips | append . }}{{ end }}
+{{- range .GetTerms "tags" }}{{ $chips = $chips | append . }}{{ end }}
+{{- $repo := "" }}
+{{- range .GetTerms "project" }}
+  {{- range where hugo.Data.projects "name" .LinkTitle }}{{ $repo = .repo }}{{ end }}
+{{- end }}
+{{- if or $chips $repo }}
+<div class="entry-chips">
+  {{- with $repo }}<a class="code-link" href="{{ . }}" target="_blank" rel="noopener">{{ partial "svg.html" (dict "name" "github") }}<span>Code</span></a>{{ end }}
+  {{- range $chips }}<a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>{{ end }}
+</div>
+{{- end }}

@@ -1,0 +1,19 @@
+<div class="project-grid">
+  {{- range hugo.Data.projects }}
+  {{- $term := site.GetPage (printf "/project/%s" .slug) }}
+  {{- $count := 0 }}{{ with $term }}{{ $count = len .Pages }}{{ end }}
+  <article class="project-card">
+    <h3>{{ .name }}</h3>
+    <p>{{ .description }}</p>
+    {{- $doc := `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>` }}
+    <div class="project-links">
+      <a href="{{ .repo }}" target="_blank" rel="noopener">{{ partial "svg.html" (dict "name" "github") }}<span>GitHub</span></a>
+      {{- if $term }}
+      <a href="{{ $term.RelPermalink }}">{{ $doc | safeHTML }}<span>Writing ({{ $count }})</span></a>
+      {{- else }}
+      <span class="disabled">{{ $doc | safeHTML }}<span>Writing (0)</span></span>
+      {{- end }}
+    </div>
+  </article>
+  {{- end }}
+</div>

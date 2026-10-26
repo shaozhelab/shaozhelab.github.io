@@ -1,0 +1,44 @@
+baseURL = 'https://shaozhelab.github.io/'
+locale = 'en-us'
+title = 'ShaozheLab'
+capitalizeListTitles = false
+theme = 'PaperMod'
+
+[taxonomies]
+  project = 'project'
+  tag = 'tags'
+
+[params]
+  mainSections = ['writing']
+  defaultTheme = 'auto'
+  ShowReadingTime = true
+  hideAuthor = true
+  DateFormat = 'January 2006'
+
+  [params.homeInfoParams]
+    Title = 'ShaozheLab'
+    Content = 'This site collects my work on post-training, from supervised fine-tuning to preference and policy optimization. Each project builds an end-to-end pipeline, uses ablations to understand what drives its behavior, and explains the mechanisms in writing.'
+
+  [[params.socialIcons]]
+    name = 'github'
+    url = 'https://github.com/shaozhelab'
+
+[menu]
+  [[menu.main]]
+    name = 'About'
+    url = '/about/'
+    weight = 1
+  [[menu.main]]
+    name = 'Projects'
+    url = '/projects/'
+    weight = 2
+  [[menu.main]]
+    name = 'Writing'
+    url = '/writing/'
+    weight = 3
+
+[markup.goldmark.extensions.passthrough]
+  enable = true
+  [markup.goldmark.extensions.passthrough.delimiters]
+    block = [['$$', '$$']]
+    inline = [['$', '$']]

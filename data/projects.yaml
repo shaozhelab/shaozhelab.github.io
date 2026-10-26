@@ -1,0 +1,8 @@
+- name: nanoPO
+  slug: nanopo
+  description: Minimal, readable implementations of the policy-optimization algorithms behind LLM post-training.
+  repo: https://github.com/shaozhelab/nanoPO
+- name: grounded-refusal
+  slug: grounded-refusal
+  description: Post-training and diagnostic evaluation for evidence-grounded refusal in QA.
+  repo: https://github.com/shaozhelab/grounded-refusal
