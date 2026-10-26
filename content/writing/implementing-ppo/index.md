@@ -1,7 +1,7 @@
 ---
 title: "Implementing PPO: Ablations and How Clipping Bounds the KL"
 date: 2026-10-24
-draft: true
+draft: false
 math: true
 project: [nanoPO]
 tags: [PPO, reinforcement learning, ablation]
