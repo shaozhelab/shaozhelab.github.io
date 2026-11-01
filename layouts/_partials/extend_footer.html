@@ -1,0 +1,90 @@
+{{- if .IsPage }}
+<div id="image-viewer" class="image-viewer" role="dialog" aria-modal="true" aria-label="Enlarged image" hidden>
+  <button type="button" class="image-viewer-close" aria-label="Close enlarged image">&times;</button>
+  <img alt="">
+</div>
+<script>
+  (function () {
+    const viewer = document.getElementById("image-viewer");
+    const enlarged = viewer.querySelector("img");
+    const close = viewer.querySelector("button");
+    let opener = null;
+
+    function open(image) {
+      opener = image;
+      enlarged.src = image.currentSrc || image.src;
+      enlarged.alt = image.alt;
+      viewer.classList.remove("full-size");
+      viewer.hidden = false;
+      document.documentElement.classList.add("image-viewer-open");
+      close.focus();
+    }
+
+    function shut() {
+      viewer.hidden = true;
+      viewer.classList.remove("full-size", "dragging");
+      document.documentElement.classList.remove("image-viewer-open");
+      enlarged.removeAttribute("src");
+      if (opener) opener.focus();
+    }
+
+    function toggleFullSize(event) {
+      const box = enlarged.getBoundingClientRect();
+      const x = (event.clientX - box.left) / box.width;
+      const y = (event.clientY - box.top) / box.height;
+      viewer.classList.toggle("full-size");
+      viewer.scrollLeft = x * viewer.scrollWidth - viewer.clientWidth / 2;
+      viewer.scrollTop = y * viewer.scrollHeight - viewer.clientHeight / 2;
+    }
+
+    document.querySelectorAll(".post-content img").forEach(function (image) {
+      image.classList.add("zoomable");
+      image.tabIndex = 0;
+      image.setAttribute("role", "button");
+      image.setAttribute("aria-label", "Enlarge image: " + image.alt);
+      image.addEventListener("click", function () { open(image); });
+      image.addEventListener("keydown", function (event) {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          open(image);
+        }
+      });
+    });
+
+    let drag = null;
+    let dragged = false;
+
+    enlarged.draggable = false;
+    viewer.addEventListener("pointerdown", function (event) {
+      dragged = false;
+      if (event.pointerType !== "mouse" || !viewer.classList.contains("full-size")) return;
+      drag = { x: event.clientX, y: event.clientY, left: viewer.scrollLeft, top: viewer.scrollTop };
+      viewer.classList.add("dragging");
+      viewer.setPointerCapture(event.pointerId);
+    });
+    viewer.addEventListener("pointermove", function (event) {
+      if (!drag) return;
+      const dx = event.clientX - drag.x;
+      const dy = event.clientY - drag.y;
+      if (Math.abs(dx) > 4 || Math.abs(dy) > 4) dragged = true;
+      viewer.scrollLeft = drag.left - dx;
+      viewer.scrollTop = drag.top - dy;
+    });
+    function endDrag() {
+      drag = null;
+      viewer.classList.remove("dragging");
+    }
+    viewer.addEventListener("pointerup", endDrag);
+    viewer.addEventListener("pointercancel", endDrag);
+
+    viewer.addEventListener("click", function (event) {
+      if (dragged) return;
+      if (event.target === enlarged && !viewer.classList.contains("full-size")) toggleFullSize(event);
+      else shut();
+    });
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && !viewer.hidden) shut();
+    });
+  })();
+</script>
+{{- end }}
